@@ -1,0 +1,18 @@
+# SSH private keys and local credentials
+*.pem
+*.ppk
+*.key
+id_rsa*
+id_ed25519*
+.ssh/
+.aws/
+.env
+.env.*
+!.env.example
+credentials
+
+# Local files
+.DS_Store
+__MACOSX/
+.vscode/
+*.zip
