@@ -11,7 +11,7 @@ AWS에서 VPC, Public Subnet, Internet Gateway, Security Group, EC2를 구성하
 | 저장소 | https://github.com/dave17code/b3-1-aws-cloud-infra |
 | 리전 | 서울, `ap-northeast-2` |
 | 검증 일시 | 2026.09.28~ |
-| EC2 이름 / 인스턴스 유형 | `b3-1-web` / [작성 필요] |
+| EC2 이름 / 인스턴스 유형 | `b3-1-web` / t3.micro |
 | 운영체제 | [작성 필요: 서버에서 확인한 OS와 버전] |
 | 루트 EBS | [작성 필요: 유형·용량·Delete on termination] |
 | 무료 혜택 적용 확인 | [작성 필요: 확인일과 적용되는 플랜·크레딧/무료 사용량] |
