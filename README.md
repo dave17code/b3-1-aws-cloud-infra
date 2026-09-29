@@ -46,7 +46,12 @@ IAM은 AWS 리소스 작업 권한을, SG는 네트워크 통신을 제어합니
 
 ## 3. 배포 방법
 
-로컬 `web/index.html`을 SSH 키로 EC2에 전송한 뒤, Ubuntu에서 아래 순서로 배포했습니다. 실제 실행한 명령과 다르다면 수정하세요.
+Windows Git Bash에서 프로젝트 폴더를 기준으로 작업했다.
+개인 키는 프로젝트 밖의 Codyssey/b3-1-key.pem을 사용했고,
+서버 지문은 Codyssey/ssh/known_hosts에 저장했다.
+
+scp로 web/index.html을 EC2의 /home/ubuntu/b3-1-index.html에 전송한 뒤,
+SSH로 Ubuntu에 접속하여 아래 명령으로 Nginx를 설치하고 페이지를 배포했다.
 
 ```bash
 sudo apt update
