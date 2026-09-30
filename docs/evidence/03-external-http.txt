@@ -1,0 +1,26 @@
+2026-09-29T20:15:32+0900
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0   0     0   0     0     0     0  --:--:-- --:--:-- --:--:--     0100   306 100   306   0     0 32910     0  --:--:-- --:--:-- --:--:-- 34000HTTP/1.1 200 OK
+Server: nginx/1.28.3 (Ubuntu)
+Date: Tue, 29 Sep 2026 11:15:30 GMT
+Content-Type: text/html
+Content-Length: 306
+Last-Modified: Tue, 29 Sep 2026 02:41:36 GMT
+Connection: keep-alive
+ETag: "6abb2560-132"
+Accept-Ranges: bytes
+
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B3-1 Cloud Mission</title>
+</head>
+<body>
+  <h1>Hello Cloud</h1>
+  <p>B3-1 웹 서비스가 정상적으로 실행 중입니다.</p>
+</body>
+</html>
+

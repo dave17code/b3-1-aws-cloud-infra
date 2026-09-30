@@ -1,0 +1,45 @@
+2026-09-29T02:41:52+00:00
+ubuntu
+PRETTY_NAME="Ubuntu 26.04 LTS"
+NAME="Ubuntu"
+VERSION_ID="26.04"
+VERSION="26.04 LTS (Resolute Raccoon)"
+VERSION_CODENAME=resolute
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=resolute
+LOGO=ubuntu-logo
+nginx version: nginx/1.28.3 (Ubuntu)
+active
+enabled
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+  0      0   0      0   0      0      0      0                              0100    306 100    306   0      0 434.3k      0                              0100    306 100    306   0      0 366.2k      0                              0100    306 100    306   0      0 334.6k      0                              0
+HTTP/1.1 200 OK
+Server: nginx/1.28.3 (Ubuntu)
+Date: Tue, 29 Sep 2026 02:41:52 GMT
+Content-Type: text/html
+Content-Length: 306
+Last-Modified: Tue, 29 Sep 2026 02:41:36 GMT
+Connection: keep-alive
+ETag: "6abb2560-132"
+Accept-Ranges: bytes
+
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B3-1 Cloud Mission</title>
+</head>
+<body>
+  <h1>Hello Cloud</h1>
+  <p>B3-1 웹 서비스가 정상적으로 실행 중입니다.</p>
+</body>
+</html>
