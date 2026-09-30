@@ -1,111 +1,119 @@
 # B3-1 AWS Cloud Infrastructure
 
-AWS에서 VPC, Public Subnet, Internet Gateway, Security Group, EC2를 구성하고 Nginx 웹 서비스를 배포하는 실습입니다. 외부 접속 검증은 **A 방식: 브라우저 접속**을 사용합니다.
+AWS에 VPC·퍼블릭 서브넷·Internet Gateway·Security Group·EC2를 구성하고, Nginx로 **Hello Cloud** 웹페이지를 제공하는 클라우드 인프라 실습입니다.
 
-> 제출 작성 틀입니다. 아래 구성값은 이전 가이드 기준이므로 실제 AWS 콘솔과 대조해 수정하세요. 결과 입력란과 체크박스는 직접 검증한 뒤 작성하고, 제출 전에 이 안내문을 지우세요.
+외부 접속 검증은 **A 방식 — 브라우저 HTTP 접속**을 사용합니다.
 
-## 1. 실습 정보
+## 1. 프로젝트 목표
 
-| 항목 | 실제 내용 |
+- VPC와 서브넷, 라우팅을 구성하여 EC2의 인터넷 통신 환경을 만든다.
+- IAM 사용자로 AWS 리소스를 관리하고, Security Group으로 HTTP·SSH 접근을 제어한다.
+- SSH로 EC2에 접속하여 Nginx를 설치하고 웹페이지를 배포한다.
+- 서버 내부와 외부의 HTTP 응답을 검증하고, 통신 장애 분석과 리소스 정리 결과를 남긴다.
+
+## 2. 실습 환경
+
+| 항목 | 내용 |
 |---|---|
-| 저장소 | https://github.com/dave17code/b3-1-aws-cloud-infra |
-| 리전 | 서울, `ap-northeast-2` |
-| 검증 일시 | 2026.09.28~ |
-| EC2 이름 / 인스턴스 유형 | `b3-1-web` / t3.micro |
-| 운영체제 | Ubuntu 26.04 LTS |
-| 루트 EBS | [작성 필요: 유형·용량·Delete on termination] |
-| 무료 혜택 적용 확인 | [작성 필요: 확인일과 적용되는 플랜·크레딧/무료 사용량] |
+| AWS 리전 | 아시아 태평양 서울 · `ap-northeast-2` |
+| EC2 | `b3-1-web` · `t3.micro` |
+| 서버 운영체제 | Ubuntu 26.04 LTS |
+| 웹 서버 | Nginx 1.28.3 |
+| 작업 환경 | Windows · Git Bash · Google Chrome |
 | 실습 IAM 사용자 | `b3-1-student` |
-| IAM 권한 확인 | [작성 필요: 연결 정책, 다른 정책·그룹의 관리자 권한 여부] |
-| 제출 시 서비스 상태 | [작성 필요: 실행 중 또는 실습 종료 후 리소스 정리 완료] |
+| 웹 문서 경로 | `/var/www/html/index.html` |
+| 검증 기록일 | 2026-09-29 |
 
-## 2. 인프라 구성
+운영체제와 Nginx 버전은 [서버 확인 출력](docs/evidence/02-server-check.txt)을 기준으로 기록했습니다.
 
-![AWS 구성도](docs/architecture.png)
+## 3. 인프라 구성
 
-구성도 대조 결과: [작성 필요: 실제 콘솔 설정과 일치 여부·확인일]
-
-| 구성 요소 | 설정 |
+| 구성 요소 | 실습 구성 |
 |---|---|
-| VPC | `b3-1-vpc`, `10.0.0.0/16` |
-| Public Subnet | `b3-1-public-subnet`, `10.0.1.0/24` |
-| Internet Gateway | `b3-1-igw`, 위 VPC에 연결 |
-| Route Table | `b3-1-public-rt`, 위 Subnet에 연결 |
-| 내부 경로 | `10.0.0.0/16 → local` |
-| 인터넷 경로 | `0.0.0.0/0 → b3-1-igw` |
-| EC2 퍼블릭 IPv4 | 자동 할당 |
-| SG | `b3-1-web-sg` |
-| 인바운드 HTTP | TCP 80, `0.0.0.0/0` |
-| 인바운드 SSH | TCP 22, 본인 현재 공인 IPv4의 `/32` |
-| 아웃바운드 | TCP 80·443, `0.0.0.0/0` |
-| VPC DNS | Amazon 제공 DNS, DNS resolution 활성화 |
+| VPC | `b3-1-vpc` · `10.0.0.0/16` |
+| 퍼블릭 서브넷 | `b3-1-public-subnet` · `10.0.1.0/24` |
+| Internet Gateway | `b3-1-igw` · 실습 VPC에 연결 |
+| Route Table | `b3-1-public-rt` · 서브넷에 적용, 기본 경로 `0.0.0.0/0`의 대상은 IGW |
+| Security Group | `b3-1-web-sg` · EC2에 연결 |
+| HTTP 인바운드 | TCP 80 · `0.0.0.0/0` |
+| SSH 인바운드 | TCP 22 · 허용한 접속지의 공인 IPv4 `/32` |
 
-외부 요청은 인터넷과 IGW를 통해 EC2의 네트워크 인터페이스에 도달하며, SG가 허용한 요청을 Nginx가 처리합니다. Subnet에 연결된 Route Table의 기본 경로는 인터넷 방향 통신에 사용됩니다. SG는 EC2에 연결되는 방화벽 규칙이며 별도의 프록시 서버가 아닙니다.
+외부 HTTP 요청은 IGW를 거쳐 EC2에 도달하고, SG가 허용한 요청을 Nginx가 처리합니다. IAM은 AWS 리소스 작업 권한을, SG는 네트워크 통신을 제어합니다.
 
-IAM은 AWS 리소스 작업 권한을, SG는 네트워크 통신을 제어합니다. `B3-1-LabPolicy`를 사용했다면 서비스·작업·서울 리전 수준으로 제한한 실습 정책입니다. `Resource: "*"`인 정책을 개별 실습 리소스까지 제한한 최종 최소권한 정책으로 설명하지 않습니다.
+📌 [인프라 구성도 보기](docs/architecture.png) · [구성도 편집 원본](docs/architecture.drawio)
 
-## 3. 배포 방법
+## 4. 외부 접속 증빙
 
-Windows Git Bash에서 프로젝트 폴더를 기준으로 작업했다.
-개인 키는 프로젝트 밖의 Codyssey/b3-1-key.pem을 사용했고,
-서버 지문은 Codyssey/ssh/known_hosts에 저장했다.
+- **접속 방식:** A — 브라우저 HTTP 접속
+- **검증 당시 URL:** http://3.35.141.98/
+- **검증 당시 퍼블릭 IPv4:** `3.35.141.98`
+- **검증 환경:** Windows / Google Chrome
+- **확인 결과:** `Hello Cloud` 페이지 표시 및 Network의 document 요청 `200 OK`
 
-scp로 web/index.html을 EC2의 /home/ubuntu/b3-1-index.html에 전송한 뒤,
-SSH로 Ubuntu에 접속하여 아래 명령으로 Nginx를 설치하고 페이지를 배포했다.
+![실제 외부 접속 결과 — Hello Cloud와 HTTP 200](docs/evidence/04-browser.png.png)
+
+> 위 주소는 검증 당시 주소입니다. 인스턴스 중지·재시작 또는 리소스 정리에 따라 주소와 접속 가능 여부가 달라질 수 있습니다.
+
+## 5. 배포 및 확인 방법
+
+**Windows Git Bash — 프로젝트 최상위 폴더**에서 실행합니다. `PUBLIC_IP`는 현재 EC2 콘솔의 주소에 맞춥니다.
+
+```bash
+PUBLIC_IP="3.35.141.98"
+KEY_PATH="$HOME/Desktop/All/Codyssey/b3-1-key.pem"
+
+mkdir -p ../ssh
+
+scp -o "UserKnownHostsFile=../ssh/known_hosts" \
+  -i "$KEY_PATH" web/index.html \
+  "ubuntu@$PUBLIC_IP:b3-1-index.html"
+
+ssh -o "UserKnownHostsFile=../ssh/known_hosts" \
+  -i "$KEY_PATH" "ubuntu@$PUBLIC_IP"
+```
+
+**SSH로 접속한 EC2 내부**에서 실행합니다.
 
 ```bash
 sudo apt update
 sudo apt install -y nginx
 sudo systemctl enable --now nginx
 sudo install -m 644 ~/b3-1-index.html /var/www/html/index.html
+
 sudo nginx -t
 curl -i http://localhost
 ```
 
-## 4. 필수 검증 결과
+브라우저에서는 `http://현재_EC2_퍼블릭_IP/`로 접속합니다. 이 실습의 외부 접속 검증은 HTTP 80번 포트를 사용합니다.
 
-| 검증 항목 | 실제 결과 | 근거 |
+## 6. 확인된 검증 결과
+
+아래 결과는 2026-09-29에 저장한 실행 기록을 기준으로 합니다.
+
+| 검증 | 확인 결과 | 원본 기록 |
 |---|---|---|
-| VPC·Subnet·IGW·Route Table | [작성 필요] | 콘솔 대조 및 위 구성도 |
-| EC2 1대·상태 검사 | [작성 필요] | EC2 콘솔 |
-| 키페어 SSH 접속 | [작성 필요] | `02-server-check.txt`의 사용자·OS 출력 |
-| EC2 인터넷 아웃바운드 | [작성 필요] | [01-outbound.txt](docs/evidence/01-outbound.txt) |
-| Nginx 실행·설정 검사 | [작성 필요] | [02-server-check.txt](docs/evidence/02-server-check.txt) |
-| localhost HTTP 200 | [작성 필요] | [02-server-check.txt](docs/evidence/02-server-check.txt) |
-| 외부 HTTP 200 | [작성 필요] | [03-external-http.txt](docs/evidence/03-external-http.txt) |
-| A 방식 브라우저 접속 | [작성 필요] | 아래 실제 스크린샷 |
-| HTTP 공개·SSH IP 제한 | [작성 필요] | SG 콘솔 및 [복구한 규칙](docs/evidence/10-sg-restored.png) |
-| IAM 제한·루트 계정 미사용 | [작성 필요] | 위 IAM 확인 기록 |
-| 장애 재현·원인 검증·복구 | [작성 필요] | [트러블슈팅 보고서](docs/troubleshooting.md) |
+| EC2 인터넷 아웃바운드 | `https://example.com` 요청에 HTTP 200 응답 | [01-outbound.txt](docs/evidence/01-outbound.txt) |
+| 서버 상태·내부 HTTP | `ubuntu` 접속, Nginx `active`·`enabled`, 설정 검사 성공, localhost HTTP 200 및 `Hello Cloud` | [02-server-check.txt](docs/evidence/02-server-check.txt) |
+| 외부 HTTP | Windows에서 HTTP 200 및 `Hello Cloud` 확인 | [03-external-http.txt](docs/evidence/03-external-http.txt) |
 
-### 외부 접속 증빙
+장애 재현·복구의 분석은 트러블슈팅 보고서에, 리소스 정리 결과는 정리 체크리스트에 기록합니다.
 
-- 검증 방식: **A — 브라우저로 HTTP 접속**
-- 검증 당시 URL: [작성 필요: http://실제퍼블릭IPv4/]
-- 검증 당시 퍼블릭 IPv4: [작성 필요]
-- 검증 일시와 시간대: [작성 필요]
-- 실제 브라우저 결과 / HTTP 상태: [작성 필요]
-- 현재 접속 가능 여부: [작성 필요: 종료 후에는 검증 당시 주소이며 현재 접속 불가라고 명시]
+## 7. 제출 자료
 
-![외부 브라우저 접속과 HTTP 200](docs/evidence/04-browser.png)
-
-## 5. 제출물
-
-| 필수 제출물 | 파일 |
+| 자료 | 파일 |
 |---|---|
-| VPC·Subnet·IGW·EC2·SG와 외부 요청 흐름이 있는 구성도 | [docs/architecture.png](docs/architecture.png) |
-| A/B 방식·URL/IP·실제 외부 접속 스크린샷 | 이 README의 외부 접속 증빙 |
-| 증상·가설·검증·조치·결과·재발 방지 | [docs/troubleshooting.md](docs/troubleshooting.md) |
-| 실습 리소스 정리 결과 | [docs/cleanup-checklist.md](docs/cleanup-checklist.md) |
+| 인프라 구성도 | [docs/architecture.png](docs/architecture.png) |
+| 외부 접속 방식·URL/IP·스크린샷 | 이 README의 **외부 접속 증빙** |
+| 트러블슈팅 보고서 | [docs/troubleshooting.md](docs/troubleshooting.md) |
+| 리소스 정리 체크리스트 | [docs/cleanup-checklist.md](docs/cleanup-checklist.md) |
+| 검증 출력·스크린샷 | [docs/evidence/](docs/evidence/) |
+| 배포한 HTML | [web/index.html](web/index.html) |
 
-`web/index.html`, `docs/architecture.drawio`, 증빙 텍스트 파일은 재현과 작성을 돕는 보조 파일입니다. `.pem`, AWS 자격증명, 비밀번호, GitHub 토큰은 저장소에 포함하지 않습니다.
+### 진행 상태
 
-## 6. 최종 확인
+- [x] Nginx 배포 및 서버 내부·외부 HTTP 검증
+- [x] A 방식 브라우저 접속 증빙 확보
+- [ ] 장애 재현·복구 수행 및 트러블슈팅 보고서 작성 완료
+- [ ] AWS 리소스 정리 및 정리 체크리스트 작성 완료
 
-- [ ] 실제 구성과 구성도가 일치한다.
-- [ ] README에 실제 검증 URL/IP, 방식, 시각, 브라우저 스크린샷이 있다.
-- [ ] localhost 200과 외부 200을 각각 확인했다.
-- [ ] 트러블슈팅 여섯 항목에 실제 출력과 복구 결과를 기록했다.
-- [ ] 정리 체크리스트를 실제 확인 결과로 작성했다.
-- [ ] 남겨야 하는 정당한 확인 대기를 제외하고 입력란을 모두 채웠다.
-- [ ] GitHub에서 모든 파일과 이미지가 열리고 비밀 정보가 없다.
+개인 키(`.pem`), AWS 자격증명, 비밀번호, GitHub 토큰은 저장소에 포함하지 않습니다.
