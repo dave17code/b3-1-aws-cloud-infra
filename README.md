@@ -40,7 +40,7 @@ AWS에 VPC·퍼블릭 서브넷·Internet Gateway·Security Group·EC2를 구성
 
 외부 HTTP 요청은 IGW를 거쳐 EC2에 도달하고, SG가 허용한 요청을 Nginx가 처리합니다. IAM은 AWS 리소스 작업 권한을, SG는 네트워크 통신을 제어합니다.
 
-📌 [인프라 구성도 보기](docs/architecture.png) · [구성도 편집 원본](docs/architecture.drawio)
+📍 [인프라 구성도 보기](docs/architecture.png) · [구성도 편집 원본](docs/architecture.drawio)
 
 ## 4. 외부 접속 증빙
 
