@@ -1,0 +1,25 @@
+2026-10-01T02:20:33+00:00
+active
+HTTP/1.1 200 OK
+Server: nginx/1.28.3 (Ubuntu)
+Date: Thu, 01 Oct 2026 02:20:33 GMT
+Content-Type: text/html
+Content-Length: 306
+Last-Modified: Tue, 29 Sep 2026 02:41:36 GMT
+Connection: keep-alive
+ETag: "6abb2560-132"
+Accept-Ranges: bytes
+
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B3-1 Cloud Mission</title>
+</head>
+<body>
+  <h1>Hello Cloud</h1>
+  <p>B3-1 웹 서비스가 정상적으로 실행 중입니다.</p>
+</body>
+</html>
+::1 - - [01/Oct/2026:02:20:33 +0000] "GET / HTTP/1.1" 200 306 "-" "curl/8.18.0"

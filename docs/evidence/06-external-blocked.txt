@@ -1,0 +1,4 @@
+2026-10-01T00:32:42+0900
+CASE_ID: sg-test-20260930-233433
+URL: http://3.35.141.98/?check=sg-test-20260930-233433
+curl: (28) Connection timed out after 5011 milliseconds
