@@ -98,8 +98,8 @@
         <mxCell id="31" value="Browser: HTTP 80" style="text;html=0;align=left;verticalAlign=top;whiteSpace=wrap;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=23;fontColor=#182B49;fontStyle=0;spacing=0;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="94" y="683" width="215.328125" height="33.35" />
         </mxCell>
-        <mxCell id="32" value="Mac: SSH 22" style="text;html=0;align=left;verticalAlign=top;whiteSpace=wrap;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=23;fontColor=#182B49;fontStyle=0;spacing=0;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="94" y="737" width="156.71875" height="33.35" />
+        <mxCell id="32" value="Windows / Mac: SSH 22" style="text;html=0;align=left;verticalAlign=top;whiteSpace=wrap;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#182B49;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="94" y="737" width="252" height="29" />
         </mxCell>
         <mxCell id="33" value="SSH source: My IP/32" style="text;html=0;align=left;verticalAlign=top;whiteSpace=wrap;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#51637D;fontStyle=0;spacing=0;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="94" y="778" width="223.921875" height="29.0" />
