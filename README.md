@@ -19,7 +19,7 @@ AWS에 VPC·퍼블릭 서브넷·Internet Gateway·Security Group·EC2를 구성
 | EC2 | `b3-1-web` · `t3.micro` |
 | 서버 운영체제 | Ubuntu 26.04 LTS |
 | 웹 서버 | Nginx 1.28.3 |
-| 작업 환경 | Windows · Git Bash · Google Chrome |
+| 작업 환경 | Mac · Windows · Git Bash · Google Chrome |
 | 실습 IAM 사용자 | `b3-1-student` |
 | 웹 문서 경로 | `/var/www/html/index.html` |
 | 검증 기록일 | 2026-09-29 |
