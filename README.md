@@ -102,7 +102,7 @@ curl -i http://localhost
 | 자료 | 파일 |
 |---|---|
 | 인프라 구성도 | [docs/architecture.png](docs/architecture.png) |
-| 외부 접속 방식·URL/IP·스크린샷 | 이 README의 **외부 접속 증빙** |
+| 외부 접속 방식·URL/IP·스크린샷 | README의 **외부 접속 증빙** |
 | 트러블슈팅 보고서 | [docs/troubleshooting.md](docs/troubleshooting.md) |
 | 리소스 정리 체크리스트 | [docs/cleanup-checklist.md](docs/cleanup-checklist.md) |
 | 검증 출력·스크린샷 | [docs/evidence/](docs/evidence/) |
